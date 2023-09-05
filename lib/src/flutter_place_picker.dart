@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
-import 'package:geocoding/geocoding.dart' as geocoding;
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_place_picker/flutter_place_picker.dart';
@@ -94,27 +92,6 @@ class GoogleMapPlacePicker extends StatelessWidget {
     }
 
     provider.placeSearchingState = SearchingState.Searching;
-
-    try {
-      List<GeocodingResult> placemarks =
-          (await provider.geocoding.searchByLocation(Location(
-            lat: provider.cameraPosition!.target.latitude,
-            lng: provider.cameraPosition!.target.longitude))).results;
-      print(jsonEncode(placemarks[0].toJson()));
-      PickResult result = PickResult();
-      result.formattedAddress = placemarks[0].formattedAddress;
-      result.geometry = placemarks[0].geometry;
-      result.name = placemarks[0].addressComponents[0].shortName;
-      result.adrAddress = placemarks[0].addressComponents[0].longName;
-
-      provider.selectedPlace = result;
-
-      provider.selectedPlace = result;
-      return provider.placeSearchingState = SearchingState.Idle;
-
-    } catch (e) {
-      debugPrint(e.toString());
-    }
 
     final GeocodingResponse response =
         await provider.geocoding.searchByLocation(
