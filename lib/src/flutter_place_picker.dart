@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
@@ -95,30 +96,22 @@ class GoogleMapPlacePicker extends StatelessWidget {
     provider.placeSearchingState = SearchingState.Searching;
 
     try {
-      List<geocoding.Placemark> placemarks =
-          await geocoding.placemarkFromCoordinates(
-              provider.cameraPosition!.target.latitude,
-              provider.cameraPosition!.target.longitude);
-
-      PickResult result = PickResult();
-      result.formattedAddress = placemarks[0].name;
-      result.geometry = Geometry(
-        location: Location(
+      List<GeocodingResult> placemarks =
+          (await provider.geocoding.searchByLocation(Location(
             lat: provider.cameraPosition!.target.latitude,
-            lng: provider.cameraPosition!.target.longitude),
-      );
-      result.name = placemarks[0].name;
-      result.adrAddress = placemarks[0].name;
+            lng: provider.cameraPosition!.target.longitude))).results;
+      print(jsonEncode(placemarks[0].toJson()));
+      PickResult result = PickResult();
+      result.formattedAddress = placemarks[0].formattedAddress;
+      result.geometry = placemarks[0].geometry;
+      result.name = placemarks[0].addressComponents[0].shortName;
+      result.adrAddress = placemarks[0].addressComponents[0].longName;
 
       provider.selectedPlace = result;
-      Post().toServer("${provider.serverUrl}${Urls.saveLocalMap}", {
-        "lat": provider.cameraPosition!.target.latitude,
-        "lng": provider.cameraPosition!.target.latitude,
-        "description": placemarks[0].name,
-      });
 
       provider.selectedPlace = result;
       return provider.placeSearchingState = SearchingState.Idle;
+
     } catch (e) {
       debugPrint(e.toString());
     }
