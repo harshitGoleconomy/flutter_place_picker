@@ -93,64 +93,69 @@ class GoogleMapPlacePicker extends StatelessWidget {
 
     provider.placeSearchingState = SearchingState.Searching;
 
-    final GeocodingResponse response =
-        await provider.geocoding.searchByLocation(
-      Location(
-          lat: provider.cameraPosition!.target.latitude,
-          lng: provider.cameraPosition!.target.longitude),
-      language: language,
-    );
-
-    if (response.errorMessage?.isNotEmpty == true ||
-        response.status == "REQUEST_DENIED") {
-      debugPrint("Camera Location Search Error: " + response.errorMessage!);
-      if (onSearchFailed != null) {
-        onSearchFailed!(response.status);
-      }
-      provider.placeSearchingState = SearchingState.Idle;
-      return;
-    }
-
-    if(response.results.isNotEmpty){PickResult result = PickResult.fromGeocodingResult(response.results[0]);
-
-    //! Save address to local map
-    Post().toServer("${provider.serverUrl}${Urls.saveLocalMap}", {
-      "lat": result.geometry!.location.lat,
-      "lng": result.geometry!.location.lng,
-      "description": result.formattedAddress,
-      "place_id": response.results[0].placeId,
-    });
-
-    if (usePlaceDetailSearch) {
-      final PlacesDetailsResponse detailResponse =
-          await provider.places.getDetailsByPlaceId(
-        response.results[0].placeId,
+    try {
+      final GeocodingResponse response =
+          await provider.geocoding.searchByLocation(
+        Location(
+            lat: provider.cameraPosition!.target.latitude,
+            lng: provider.cameraPosition!.target.longitude),
         language: language,
       );
 
-      if (detailResponse.errorMessage?.isNotEmpty == true ||
-          detailResponse.status == "REQUEST_DENIED") {
-        debugPrint("Fetching details by placeId Error: " +
-            detailResponse.errorMessage!);
+      if (response.errorMessage?.isNotEmpty == true ||
+          response.status == "REQUEST_DENIED") {
+        debugPrint("Camera Location Search Error: " + response.errorMessage!);
         if (onSearchFailed != null) {
-          onSearchFailed!(detailResponse.status);
+          onSearchFailed!(response.status);
         }
         provider.placeSearchingState = SearchingState.Idle;
         return;
       }
 
-      provider.selectedPlace =
-          PickResult.fromPlaceDetailResult(detailResponse.result);
-      Post().toServer("${provider.serverUrl}${Urls.saveLocalMap}", {
-        "lat": detailResponse.result.geometry!.location.lat,
-        "lng": detailResponse.result.geometry!.location.lng,
-        "description": detailResponse.result.formattedAddress,
-        "place_id": detailResponse.result.placeId,
-      });
-    } else {
-      provider.selectedPlace = result;
-    }}
+      if (response.results.isNotEmpty) {
+        PickResult result = PickResult.fromGeocodingResult(response.results[0]);
 
+        //! Save address to local map
+        Post().toServer("${provider.serverUrl}${Urls.saveLocalMap}", {
+          "lat": result.geometry!.location.lat,
+          "lng": result.geometry!.location.lng,
+          "description": result.formattedAddress,
+          "place_id": response.results[0].placeId,
+        });
+
+        if (usePlaceDetailSearch) {
+          final PlacesDetailsResponse detailResponse =
+              await provider.places.getDetailsByPlaceId(
+            response.results[0].placeId,
+            language: language,
+          );
+
+          if (detailResponse.errorMessage?.isNotEmpty == true ||
+              detailResponse.status == "REQUEST_DENIED") {
+            debugPrint("Fetching details by placeId Error: " +
+                detailResponse.errorMessage!);
+            if (onSearchFailed != null) {
+              onSearchFailed!(detailResponse.status);
+            }
+            provider.placeSearchingState = SearchingState.Idle;
+            return;
+          }
+
+          provider.selectedPlace =
+              PickResult.fromPlaceDetailResult(detailResponse.result);
+          Post().toServer("${provider.serverUrl}${Urls.saveLocalMap}", {
+            "lat": detailResponse.result.geometry!.location.lat,
+            "lng": detailResponse.result.geometry!.location.lng,
+            "description": detailResponse.result.formattedAddress,
+            "place_id": detailResponse.result.placeId,
+          });
+        } else {
+          provider.selectedPlace = result;
+        }
+      }
+    } on Exception catch (e) {
+      debugPrint("Camera Location Search Error: " + e.toString());
+    }
     provider.placeSearchingState = SearchingState.Idle;
   }
 
