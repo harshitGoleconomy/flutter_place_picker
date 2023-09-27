@@ -111,7 +111,7 @@ class GoogleMapPlacePicker extends StatelessWidget {
       return;
     }
 
-    PickResult result = PickResult.fromGeocodingResult(response.results[0]);
+    if(response.results.isNotEmpty){PickResult result = PickResult.fromGeocodingResult(response.results[0]);
 
     //! Save address to local map
     Post().toServer("${provider.serverUrl}${Urls.saveLocalMap}", {
@@ -149,7 +149,7 @@ class GoogleMapPlacePicker extends StatelessWidget {
       });
     } else {
       provider.selectedPlace = result;
-    }
+    }}
 
     provider.placeSearchingState = SearchingState.Idle;
   }
