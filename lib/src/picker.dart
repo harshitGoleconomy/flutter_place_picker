@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_webservice/places.dart';
+import 'package:flutter_google_maps_webservices/places.dart';
 import 'package:flutter_place_picker/utils/urls.dart';
 import 'package:flutter_place_picker/utils/uuid.dart';
 import 'package:google_api_headers/google_api_headers.dart';

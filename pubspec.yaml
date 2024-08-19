@@ -4,22 +4,22 @@ version: 0.0.1-dev.5
 homepage: https://github.com/saytoonz/flutter_place_picker
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=3.5.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
   google_maps_flutter: ^2.2.5
-  geolocator: ^9.0.2
-  permission_handler: ^10.2.0
+  geolocator: ^13.0.1
+  permission_handler: ^11.3.1
   provider: ^6.0.5
-  google_maps_webservice: ^0.0.20-nullsafety.5
-  google_api_headers: ^1.5.0+1
+  flutter_google_maps_webservices: ^1.1.1
+  google_api_headers: ^4.2.0
   tuple: ^2.0.1
   dio: ^5.0.2
-  http: ^0.13.5
-  geocoding: ^2.1.0
+  http: ^1.2.2
+  geocoding: ^3.0.0
 
 dev_dependencies:
   flutter_test:

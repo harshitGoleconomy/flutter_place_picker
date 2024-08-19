@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:google_maps_webservice/places.dart';
+import 'package:flutter_google_maps_webservices/places.dart';
 import 'package:flutter_place_picker/utils/urls.dart';
 import 'package:flutter_place_picker/flutter_place_picker.dart';
 import 'package:flutter_place_picker/models/local_prediction.dart';

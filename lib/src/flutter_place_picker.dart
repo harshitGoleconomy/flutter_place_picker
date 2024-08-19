@@ -11,8 +11,8 @@ import 'package:flutter_place_picker/providers/place_provider.dart';
 import 'package:flutter_place_picker/resources/post_to_server.dart';
 import 'package:flutter_place_picker/utils/urls.dart';
 import 'package:flutter_place_picker/widgets/animated_pin.dart';
-import 'package:google_maps_webservice/geocoding.dart';
-import 'package:google_maps_webservice/places.dart';
+import 'package:flutter_google_maps_webservices/geocoding.dart';
+import 'package:flutter_google_maps_webservices/places.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
